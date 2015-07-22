@@ -1,6 +1,6 @@
 ;;; helm-w3m.el --- W3m bookmark - helm interface. -*- lexical-binding: t -*-
 
-;; Copyright (C) 2012 ~ 2014 Thierry Volpiatto <thierry.volpiatto@gmail.com>
+;; Copyright (C) 2012 ~ 2015 Thierry Volpiatto <thierry.volpiatto@gmail.com>
 
 ;; Version: 1.6.8
 ;; Package-Requires: ((helm "1.5") (w3m "0.0") (cl-lib "0.5") (emacs "24.1"))
