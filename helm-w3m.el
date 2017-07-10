@@ -37,6 +37,26 @@
   "W3m related Applications and libraries for Helm."
   :group 'helm)
 
+(defcustom helm-w3m-actions (helm-make-actions
+                             "Browse Url"
+                             (lambda (candidate)
+                               (helm-w3m-browse-bookmark candidate))
+                             "Copy Url"
+                             (lambda (elm)
+                               (kill-new (helm-w3m-bookmarks-get-value elm)))
+                              "Browse Url Externally"
+                              (lambda (candidate)
+                                (helm-w3m-browse-bookmark candidate t))
+                              "Delete Bookmark"
+                              (lambda (candidate)
+                                (helm-w3m-delete-bookmark candidate))
+                              "Rename Bookmark"
+                              (lambda (candidate)
+                                (helm-w3m-rename-bookmark candidate)))
+  "Actions for helm-w3m bookmarks."
+  :group 'helm-w3m
+  :type '(alist :key-type string :value-type function))
+
 (defface helm-w3m-bookmarks '((t (:foreground "cyan1" :underline t)))
   "Face for w3m bookmarks" :group 'helm-w3m)
 
@@ -46,39 +66,25 @@
 (defvar helm-w3m-bookmark-url-regexp "\\(https\\|http\\|ftp\\|file\\)://[^>]*")
 (defvar helm-w3m-bookmarks-alist nil)
 (defvar helm-source-w3m-bookmarks
-  '((name . "W3m Bookmarks")
-    (init . (lambda ()
-              (setq helm-w3m-bookmarks-alist
-                    (helm-html-bookmarks-to-alist
-                     w3m-bookmark-file
-                     helm-w3m-bookmark-url-regexp
-                     helm-w3m-bookmarks-regexp))))
-    (candidates . (lambda ()
-                    (mapcar #'car helm-w3m-bookmarks-alist)))
-    (filtered-candidate-transformer
-     helm-adaptive-sort
-     helm-highlight-w3m-bookmarks)
-    (action . (("Browse Url"
-                . (lambda (candidate)
-                    (helm-w3m-browse-bookmark candidate)))
-               ("Copy Url"
-                . (lambda (elm)
-                    (kill-new (helm-w3m-bookmarks-get-value elm))))
-               ("Browse Url Externally"
-                . (lambda (candidate)
-                    (helm-w3m-browse-bookmark candidate t)))
-               ("Delete Bookmark"
-                . (lambda (candidate)
-                    (helm-w3m-delete-bookmark candidate)))
-               ("Rename Bookmark"
-                . (lambda (candidate)
-                    (helm-w3m-rename-bookmark candidate)))))
-    (persistent-action . (lambda (candidate)
-                           (if current-prefix-arg
-                               (helm-w3m-browse-bookmark candidate t)
-                             (helm-w3m-browse-bookmark candidate nil t))))
-    (persistent-help . "Open URL with emacs-w3m in new tab / \
-C-u \\[helm-execute-persistent-action]: Open URL with Firefox"))
+  (helm-build-sync-source "W3m Bookmarks"
+    :init (lambda ()
+            (setq helm-w3m-bookmarks-alist
+                  (helm-html-bookmarks-to-alist
+                   w3m-bookmark-file
+                   helm-w3m-bookmark-url-regexp
+                   helm-w3m-bookmarks-regexp)))
+    :candidates (lambda ()
+                  (mapcar #'car helm-w3m-bookmarks-alist))
+    :filtered-candidate-transformer
+     '(helm-adaptive-sort
+       helm-highlight-w3m-bookmarks)
+    :action 'helm-w3m-actions
+    :persistent-action (lambda (candidate)
+                         (if current-prefix-arg
+                             (helm-w3m-browse-bookmark candidate t)
+                           (helm-w3m-browse-bookmark candidate nil t)))
+    :persistent-help "Open URL with emacs-w3m in new tab / \
+C-u \\[helm-execute-persistent-action]: Open URL with Firefox")
   "Needs w3m and emacs-w3m.
 
 http://w3m.sourceforge.net/
@@ -137,8 +143,8 @@ Needs w3m and emacs-w3m.
 http://w3m.sourceforge.net/
 http://emacs-w3m.namazu.org/"
   (interactive)
-  (helm-other-buffer 'helm-source-w3m-bookmarks
-                     "*helm w3m bookmarks*"))
+  (helm :sources 'helm-source-w3m-bookmarks
+        :buffer "*helm w3m bookmarks*"))
 
 
 (provide 'helm-w3m)
