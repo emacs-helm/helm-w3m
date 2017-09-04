@@ -107,7 +107,7 @@ http://emacs-w3m.namazu.org/")
                  'help-echo (helm-w3m-bookmarks-get-value i))))
 
 
-(defun helm-w3m-delete-bookmark (elm)
+(defun helm-w3m-delete-bookmark-1 (elm)
   "Delete w3m bookmark from `w3m-bookmark-file'."
   (with-current-buffer
       (find-file-literally w3m-bookmark-file)
@@ -119,6 +119,10 @@ http://emacs-w3m.namazu.org/")
       (delete-blank-lines))
     (save-buffer)
     (kill-buffer)))
+
+(defun helm-w3m-delete-bookmark (_candidate)
+  (cl-loop for bmk in (helm-marked-candidates)
+           do (helm-w3m-delete-bookmark-1 bmk)))
 
 (defun helm-w3m-rename-bookmark (elm)
   "Rename w3m bookmark in `w3m-bookmark-file'."
