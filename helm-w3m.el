@@ -111,7 +111,7 @@ http://emacs-w3m.namazu.org/")
 (defun helm-w3m-delete-bookmark-1 (elm)
   "Delete w3m bookmark from `w3m-bookmark-file'."
   (with-current-buffer
-      (find-file-literally w3m-bookmark-file)
+      (find-file-noselect w3m-bookmark-file)
     (goto-char (point-min))
     (when (re-search-forward elm nil t)
       (forward-line 0)
@@ -130,7 +130,7 @@ http://emacs-w3m.namazu.org/")
   (let* ((old-title (replace-regexp-in-string ">" "" elm))
          (new-title (helm-read-string "NewTitle: " old-title)))
     (with-current-buffer
-        (find-file-literally w3m-bookmark-file)
+        (find-file-noselect w3m-bookmark-file)
       (goto-char (point-min))
       (when (re-search-forward (concat elm "<") nil t)
         (goto-char (1- (point)))
