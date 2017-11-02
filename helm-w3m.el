@@ -48,7 +48,7 @@
                               "Browse Url Externally"
                               (lambda (candidate)
                                 (helm-w3m-browse-bookmark candidate t))
-                              "Delete Bookmark"
+                              "Delete Bookmarks"
                               (lambda (candidate)
                                 (helm-w3m-delete-bookmark candidate))
                               "Rename Bookmark"
@@ -113,7 +113,7 @@ http://emacs-w3m.namazu.org/")
   (with-current-buffer
       (find-file-noselect w3m-bookmark-file)
     (goto-char (point-min))
-    (when (re-search-forward elm nil t)
+    (when (search-forward elm nil t)
       (forward-line 0)
       (delete-region (point)
                      (line-end-position))
@@ -132,7 +132,7 @@ http://emacs-w3m.namazu.org/")
     (with-current-buffer
         (find-file-noselect w3m-bookmark-file)
       (goto-char (point-min))
-      (when (re-search-forward (concat elm "<") nil t)
+      (when (search-forward (concat elm "<") nil t)
         (goto-char (1- (point)))
         (delete-char (- (length old-title)))
         (insert new-title))
