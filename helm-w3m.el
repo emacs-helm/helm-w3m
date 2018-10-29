@@ -42,6 +42,9 @@
                              "Browse Url"
                              (lambda (candidate)
                                (helm-w3m-browse-bookmark candidate))
+                             "Browse Url new tab"
+                             (lambda (candidate)
+                               (helm-w3m-browse-bookmark candidate nil t))
                              "Copy Url"
                              (lambda (elm)
                                (kill-new (helm-w3m-bookmarks-get-value elm)))
