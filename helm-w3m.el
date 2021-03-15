@@ -32,6 +32,7 @@
   (require 'w3m-bookmark nil t))
 
 (declare-function w3m-browse-url "w3m.el")
+(defvar helm-surfraw-duckduckgo-url)
 
 
 (defgroup helm-w3m nil
